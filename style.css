@@ -59,10 +59,11 @@ body {
   grid-template-columns: repeat(4, 25%);
 }
 
-.btnActive
+.activeBtnColor
 {
-  background-color: rgba(253, 182, 148, 0.7);
+  background-color: rgba(253, 182, 148, 0.5)!important;
 }
+
 
 #keyPad > button
 {
@@ -70,8 +71,8 @@ body {
   box-shadow: inset 3px 3px rgba(228, 88, 29, 0.5), 3px 3px rgba(228, 88, 29, 0.5);
   font-size: 2rem;
   font-family:monospace;
-  color: white;
   background-color: rgba(253, 182, 148, 1);
+  color: white;
   text-shadow: 1px 1px gray;
   border-radius: 50%;
   height: 50px;
