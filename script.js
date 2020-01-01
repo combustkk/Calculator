@@ -2,7 +2,7 @@
 
 const keys = document.querySelectorAll("#keyPad > button");
 const result = document.querySelector("#result");
-
+let calculated = false;
 const precedence =
 {
   "+": 1,
@@ -29,6 +29,7 @@ function calculate(op, op1, op2)
       if(op2 == 0)
       {
         alert("Can't divide by zero!");
+        return NaN;
       }else
       {
         result = op1 / op2;
@@ -59,13 +60,13 @@ function infixAlgo(string)
     if(!isNaN(token))
     {
       operandStack.push(+token);
-      console.log(operandStack);
+      //console.log(operandStack);
     }
     else {
       if(operatorStack.length == 0)
       {
         operatorStack.push(token);
-        console.log(operatorStack);
+        //console.log(operatorStack);
       }
       else
       {
@@ -73,8 +74,13 @@ function infixAlgo(string)
         {
           let op2 = operandStack.pop();
           let op1 = operandStack.pop();
-          operandStack.push(calculate(operatorStack.pop(), op1, op2));
-          console.log(operandStack);
+          let res = calculate(operatorStack.pop(), op1, op2);
+          if(isNaN(res))
+          {
+            return NaN
+          }
+          operandStack.push(res);
+          //console.log(operandStack);
         }
         operatorStack.push(token);
       }
@@ -84,7 +90,12 @@ function infixAlgo(string)
   {
     let op2 = operandStack.pop();
     let op1 = operandStack.pop();
-    operandStack.push(calculate(operatorStack.pop(), op1, op2))
+    let res = calculate(operatorStack.pop(), op1, op2);
+    if(isNaN(res))
+    {
+      return NaN
+    }
+    operandStack.push(res);
   }
   return operandStack.last();
 }
@@ -114,17 +125,43 @@ function pressKeyEffect(key)
 
 keys.forEach((key)=>
 {
+  if(calculated)
+  {
+    result.textContent = "";
+    calculated = false;
+  }
   key.addEventListener("click", ()=>pressKeyEffect(key));
 });
 
 window.addEventListener('keydown', event=>{
-  console.log(event.key);
+  //console.log(event.key);
   let key = document.querySelector(`[value='${event.key}']`);
+  if(key || event.key === "Enter")
+  {
+    if(calculated)
+    {
+      if(event.key !== "Enter")
+      {
+        result.textContent = "";
+        calculated = false;
+      }
+    }
+  }
   if(event.key === "Backspace")
   {
     backspace();
     pressKeyEffect(key);
-  }else{
+  }
+  else if(event.key === "Enter")
+  {
+    //console.log(result.textContent);
+    if(result.textContent != "")
+    {
+      result.textContent = infixAlgo(result.textContent);
+      calculated = true;
+    }
+  }
+  else{
     pressKeyEffect(key);
   }
   if(event.key in precedence || event.key === ".")
@@ -136,12 +173,11 @@ window.addEventListener('keydown', event=>{
     }
     else
     {
-
       result.textContent += key.value;
     }
   }
-  else {
-    if(key)
+  else{
+    if(key && event.key != "Backspace")
     {
       result.textContent += key.value;
     }
