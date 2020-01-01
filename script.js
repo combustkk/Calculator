@@ -2,8 +2,7 @@
 
 const keys = document.querySelectorAll("#keyPad > button");
 const result = document.querySelector("#result");
-const operatorStack = new Array();
-const operandStack = new Array();
+
 const precedence =
 {
   "+": 1,
@@ -12,12 +11,33 @@ const precedence =
   "/": 2,
 };
 
-let Process = function(op, op1, op2)
+function calculate(op, op1, op2)
 {
-  this.op = op;
-  this.op1 = op1;
-  this.op2 = op2;
-  
+  let result = 0;
+  switch(op)
+  {
+    case "+":
+      result = op1 + op2;
+      break;
+    case "-":
+      result = op1 - op2;
+      break;
+    case "*":
+      result = op1 * op2;
+      break;
+    case "/":
+      if(op2 == 0)
+      {
+        alert("Can't divide by zero!");
+      }else
+      {
+        result = op1 / op2;
+      }
+      break;
+    default:
+      break;
+  }
+  return Math.round(result * 100) / 100;
 }
 
 if (!Array.prototype.last){
@@ -29,27 +49,44 @@ if (!Array.prototype.last){
 
 function infixAlgo(string)
 {
+  const operatorStack = new Array();
+  const operandStack = new Array();
   const parsedString = string.match(/[\d\.]+|[\/\*\+-]/g);
-  for(let token in parsedString)
+  //console.log(parsedString);
+  for(let i = 0; i < parsedString.length; ++i)
   {
-    if(isNaN(token))
+    let token = parsedString[i];
+    if(!isNaN(token))
     {
-      operandStack.push(parseInt(token, 10));
+      operandStack.push(+token);
+      console.log(operandStack);
     }
     else {
       if(operatorStack.length == 0)
       {
         operatorStack.push(token);
+        console.log(operatorStack);
       }
       else
       {
-        while(operatorStack.last()>=token && operatorStack.length != 0)
+        while(precedence[operatorStack.last()]>=precedence[token] && operatorStack.length != 0)
         {
-
+          let op2 = operandStack.pop();
+          let op1 = operandStack.pop();
+          operandStack.push(calculate(operatorStack.pop(), op1, op2));
+          console.log(operandStack);
         }
+        operatorStack.push(token);
       }
     }
   }
+  while(operatorStack.length != 0)
+  {
+    let op2 = operandStack.pop();
+    let op1 = operandStack.pop();
+    operandStack.push(calculate(operatorStack.pop(), op1, op2))
+  }
+  return operandStack.last();
 }
 
 
