@@ -22,7 +22,6 @@ body {
   margin-left: auto;
   margin-right: auto;
   max-width: 300px;
-  min-width: 300px;
   width: 70%;
   background-color: rgba(0, 27, 85, 1);
   display: flex;
@@ -54,8 +53,6 @@ body {
 #keyPad
 {
   width: 80%;
-  margin-top: 20px;
-  margin-bottom: 40px;
   display: grid;
   grid-template-columns: repeat(4, 25%);
 }
@@ -68,16 +65,41 @@ body {
 
 #keyPad > button
 {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
   border: rgba(228, 88, 29, 0.5) 1px;
   box-shadow: inset 3px 3px rgba(228, 88, 29, 0.5), 3px 3px rgba(228, 88, 29, 0.5);
-  font-size: 2rem;
   font-family:monospace;
   background-color: rgba(253, 182, 148, 1);
   color: white;
   text-shadow: 1px 1px gray;
   border-radius: 50%;
-  height: 50px;
-  width: 50px;
   margin: 10px;
   transition: background-color 0.2s ease-in-out;
+}
+
+@media screen and (min-width: 200px) {
+  #keyPad > button {
+    font-size: 1.5rem;
+    height: calc(35px + 10 * ((100vw - 300px))/ 400);
+    width: calc(35px + 10 * ((100vw - 300px))/ 400);
+  }
+  #keyPad
+  {
+    margin-top: calc(10px + 10 * ((100vw - 300px))/ 400);
+    margin-bottom: calc(20px + 20 * ((100vw - 300px))/ 400);
+  }
+}
+@media screen and (min-width: 700px) {
+  #keyPad > button {
+    height: 50px;
+    width: 50px;
+    font-size: 2rem;
+  }
+  #keyPad
+  {
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
 }
