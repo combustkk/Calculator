@@ -5,13 +5,16 @@ html, body {
 
 body {
     font-family: monospace;
+    text-shadow: 3px 3px rgba(50, 73, 122, 0.8);
     width:100%;
     -moz-appearance: none;
     -webkit-appearance: none;
     background-color: rgba(252, 150, 66, 1);
     color:white;
     display:flex;
+    flex-direction: column;
     align-items: center;
+    overflow: scroll;
 }
 
 
@@ -73,7 +76,7 @@ body {
   font-family:monospace;
   background-color: rgba(253, 182, 148, 1);
   color: white;
-  text-shadow: 1px 1px gray;
+  text-shadow: 2px 2px rgba(50, 73, 122, 0.8);
   border-radius: 50%;
   margin: 10px;
   transition: background-color 0.2s ease-in-out;
