@@ -11,6 +11,20 @@ const precedence =
   "/": 2,
 };
 
+function changeResult(keyValue)
+{
+  if(keyValue in precedence || keyValue === ".")
+  {
+    const str = result.textContent;
+    if(str[str.length - 1] in precedence || str[str.length - 1] ===".")
+    {
+      alert("illegal expression");
+      return;
+    }
+  }
+  result.textContent += keyValue;
+}
+
 function calculate(op, op1, op2)
 {
   let result = 0;
@@ -54,6 +68,10 @@ function infixAlgo(string)
   const operandStack = new Array();
   const parsedString = string.match(/[\d\.]+|[\/\*\+-]/g);
   //console.log(parsedString);
+  if(parsedString[0] === "+" || parsedString[0] === "-")
+  {
+    operandStack.push(0);
+  }
   for(let i = 0; i < parsedString.length; ++i)
   {
     let token = parsedString[i];
@@ -125,26 +143,44 @@ function pressKeyEffect(key)
 
 keys.forEach((key)=>
 {
-  if(calculated)
-  {
-    result.textContent = "";
-    calculated = false;
-  }
-  key.addEventListener("click", ()=>pressKeyEffect(key));
+  key.addEventListener("click", ()=>
+    {
+      if(calculated && !(key.value in precedence))
+      {
+        result.textContent = "";
+      }
+      calculated = false;
+      pressKeyEffect(key);
+      if(key.value === "Backspace")
+      {
+        backspace();
+      }
+      else if(key.value === "=")
+      {
+        let res = infixAlgo(result.textContent);
+        result.textContent = isNaN(res) ? "":res;
+        calculated = true;
+      }
+      else
+      {
+        changeResult(key.value);
+      }
+    }
+  );
 });
 
 window.addEventListener('keydown', event=>{
   //console.log(event.key);
   let key = document.querySelector(`[value='${event.key}']`);
-  if(key || event.key === "Enter")
+  if(!isNaN(result.textContent) && calculated)
   {
-    if(calculated)
+    if((key && key.value in precedence))
     {
-      if(event.key !== "Enter")
-      {
-        result.textContent = "";
-        calculated = false;
-      }
+      calculated = false;
+    }
+    else if(key && event.key != "="){
+      result.textContent = "";
+      calculated = false;
     }
   }
   if(event.key === "Backspace")
@@ -152,34 +188,21 @@ window.addEventListener('keydown', event=>{
     backspace();
     pressKeyEffect(key);
   }
-  else if(event.key === "Enter")
+  else if(event.key === "=")
   {
     //console.log(result.textContent);
     if(result.textContent != "")
     {
-      result.textContent = infixAlgo(result.textContent);
+      let res = infixAlgo(result.textContent);
+      result.textContent = isNaN(res) ? "":res;
       calculated = true;
     }
   }
   else{
     pressKeyEffect(key);
   }
-  if(event.key in precedence || event.key === ".")
+  if(key && event.key !== "Backspace" && event.key !== "=")
   {
-    const str = result.textContent;
-    if(str[str.length - 1] in precedence || str[str.length - 1] ===".")
-    {
-      alert("illegal expression--");
-    }
-    else
-    {
-      result.textContent += key.value;
-    }
-  }
-  else{
-    if(key && event.key != "Backspace")
-    {
-      result.textContent += key.value;
-    }
+    changeResult(key.value);
   }
 });
